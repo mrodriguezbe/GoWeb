@@ -26,7 +26,6 @@ func greetingsHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func pingHandler(w http.ResponseWriter, r *http.Request) {
-	w.Header().Set("Content-Type", "text/plain")
 	w.Write([]byte("pong"))
 }
 
