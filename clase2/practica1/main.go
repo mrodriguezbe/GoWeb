@@ -57,7 +57,7 @@ func addNewProductHandler(w http.ResponseWriter, r *http.Request) {
 
 	if checkUniqueCode(newProduct) {
 		fmt.Println("Product code value already exist")
-		w.WriteHeader(http.StatusBadRequest)
+		w.WriteHeader(http.StatusConflict)
 		w.Write([]byte("Product code value already existd"))
 		return
 	}
