@@ -3,49 +3,89 @@ package handler
 import (
 	"fmt"
 	"goweb/clase2/practica2/internal"
-	"goweb/clase2/practica2/internal/repository"
-	"goweb/clase2/practica2/internal/service"
 	"goweb/clase2/practica2/platform/web/request"
 	"goweb/clase2/practica2/platform/web/response"
 	"net/http"
+	"time"
 )
 
-func AddNewProductHandler() http.HandlerFunc {
+func NewDefaultProducts(sv internal.ProductService) *DefaultProductService {
+	//defualt config / values
+
+	return &DefaultProductService{
+		sv: sv,
+	}
+}
+
+type DefaultProductService struct {
+	sv internal.ProductService
+}
+
+type BodyProductJSON struct {
+	Name       string  `json:"name"`
+	Quantity   int     `json:"quantity"`
+	CodeValue  string  `json:"code_value"`
+	Published  bool    `json:"is_published"`
+	Expiration string  `json:"expiration"`
+	Price      float64 `json:"price"`
+}
+
+func (d *DefaultProductService) AddNewProductHandler() http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-		var newProduct internal.Product
-		if err := request.JSON(r, &newProduct); err != nil {
+		var newProductJSON BodyProductJSON
+		if err := request.JSON(r, &newProductJSON); err != nil {
 			fmt.Println(err)
 		}
 
-		fmt.Println(newProduct)
+		product := internal.Product{
+			Name:       newProductJSON.Name,
+			Quantity:   newProductJSON.Quantity,
+			CodeValue:  newProductJSON.CodeValue,
+			Published:  newProductJSON.Published,
+			Expiration: newProductJSON.Expiration,
+			Price:      newProductJSON.Price,
+		}
 
-		if service.ValidateWrongFields(newProduct) {
+		if validateWrongFields(product) {
 			fmt.Println("Product invalid field")
 			response.JSON(w, http.StatusBadRequest, "Product invalid field")
 			return
 		}
 
-		if service.CheckUniqueCode(newProduct) {
-			fmt.Println("Product code value already exist")
-			response.JSON(w, http.StatusBadRequest, "Product code value already exist")
-			return
-		}
-
-		if service.CheckDateFormat(newProduct) {
+		if checkDateFormat(product) {
 			fmt.Println("Product invalid date format")
 			response.JSON(w, http.StatusBadRequest, "product invalid date format")
 			return
 		}
 
-		newProduct.Id = getNewId()
-		repository.AddNewProduct(newProduct)
+		err := (*d).sv.AddNewProduct(product)
+		if err != nil {
+			fmt.Println(err)
+			response.JSON(w, http.StatusBadRequest, "Product code value already exist")
+			return
+		}
+
 		response.JSON(w, http.StatusCreated, map[string]any{
 			"message": "Product created",
-			"data":    newProduct,
+			"data":    product,
 		})
 	}
 }
 
-func getNewId() int {
-	return repository.Products[len(repository.Products)-1].Id + 1
+func checkDateFormat(p internal.Product) bool {
+	var format string = "24/02/1997"
+	_, err := time.Parse(format, p.Expiration)
+
+	if err != nil {
+		fmt.Println("TimeParse Invalid Date Format")
+		return false
+	}
+
+	return true
+}
+
+func validateWrongFields(p internal.Product) bool {
+	return (p.CodeValue == "" || p.Name == "" ||
+		p.Expiration == "" || p.Price == 0.0 ||
+		p.Quantity == 0)
 }

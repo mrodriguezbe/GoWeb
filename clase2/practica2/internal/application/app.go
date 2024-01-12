@@ -1,6 +1,7 @@
 package application
 
 import (
+	"goweb/clase2/practica2/internal"
 	"goweb/clase2/practica2/internal/handler"
 	"goweb/clase2/practica2/internal/repository"
 	"goweb/clase2/practica2/internal/service"
@@ -29,16 +30,16 @@ type DefaultHTTP struct {
 func (h *DefaultHTTP) Run() (err error) {
 	// initialize dependencies
 	// - repository
-	repository.NewProductRepo()
+	rp := repository.NewProductMap(make(map[int]internal.Product), 0)
 	// - service
-	service.ReadProducts()
+	sv := service.NewProductDefaultService(rp)
 	// - handler
-	// ..
+	hd := handler.NewDefaultProducts(sv)
 	// - router
 	rt := chi.NewRouter()
 	//   endpoints
-	rt.Post("/products", handler.GetProductByIdHandler())
-	rt.Get("/products/{id}", handler.AddNewProductHandler())
+	rt.Post("/products", hd.GetProductByIdHandler())
+	rt.Get("/products/{id}", hd.AddNewProductHandler())
 
 	// run http server
 	err = http.ListenAndServe(h.addr, rt)

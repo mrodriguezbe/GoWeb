@@ -1,5 +1,6 @@
 package internal
 
 type ProductService interface {
-	ReadProducts()
+	AddNewProduct(p Product) (err error)
+	GetProductById(id int) (product Product, err error)
 }
