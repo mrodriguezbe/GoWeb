@@ -1,6 +1,6 @@
 package internal
 
 type ProductRepository interface {
-	AddNewProduct(p Product) error
-	GetProductById(id int) (Product, error)
+	AddNewProduct(product Product) (err error)
+	GetProductById(id int) (product Product, err error)
 }

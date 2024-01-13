@@ -38,8 +38,8 @@ func (h *DefaultHTTP) Run() (err error) {
 	// - router
 	rt := chi.NewRouter()
 	//   endpoints
-	rt.Post("/products", hd.GetProductByIdHandler())
-	rt.Get("/products/{id}", hd.AddNewProductHandler())
+	rt.Post("/products", hd.AddNewProductHandler())
+	rt.Get("/products/{id}", hd.GetProductByIdHandler())
 
 	// run http server
 	err = http.ListenAndServe(h.addr, rt)

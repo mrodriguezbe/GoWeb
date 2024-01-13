@@ -22,7 +22,6 @@ func (d *DefaultProductService) GetProductByIdHandler() http.HandlerFunc {
 		if err != nil {
 			fmt.Println(err)
 			response.JSON(w, http.StatusNotFound, "Product not found")
-
 		}
 
 		response.JSON(w, http.StatusOK, map[string]any{
