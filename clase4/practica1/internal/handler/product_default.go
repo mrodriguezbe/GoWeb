@@ -99,7 +99,7 @@ func (d *DefaultProductService) GetProductByIdHandler() http.HandlerFunc {
 
 		if err != nil {
 			fmt.Println(err)
-			response.JSON(w, http.StatusNotFound, "Product not found")
+			response.Text(w, http.StatusNotFound, "Product not found")
 			return
 		}
 
@@ -256,6 +256,6 @@ func (d *DefaultProductService) DeleteProductHandler() http.HandlerFunc {
 			return
 		}
 
-		response.JSON(w, http.StatusNoContent, "movie deleted")
+		response.Text(w, http.StatusNoContent, "Product deleted")
 	}
 }
