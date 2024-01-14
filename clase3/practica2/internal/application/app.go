@@ -5,6 +5,7 @@ import (
 	"goweb/clase3/practica2/internal/handler"
 	"goweb/clase3/practica2/internal/repository"
 	"goweb/clase3/practica2/internal/service"
+	"goweb/clase3/practica2/storage"
 	"net/http"
 
 	"github.com/go-chi/chi/v5"
@@ -30,7 +31,9 @@ type DefaultHTTP struct {
 func (h *DefaultHTTP) Run() (err error) {
 	// initialize dependencies
 	// - repository
-	rp := repository.NewProductMap(make(map[int]internal.Product), 0)
+	productsMap := make(map[int]internal.Product)
+	storage.ReadProducts(&productsMap, "./storage/intial_data.json")
+	rp := repository.NewProductMap(productsMap, 0)
 	// - service
 	sv := service.NewProductDefaultService(rp)
 	// - handler
@@ -43,7 +46,6 @@ func (h *DefaultHTTP) Run() (err error) {
 	rt.Put("/products/{id}", hd.UpdateProductHandler())
 	rt.Patch("/products/{id}", hd.UpdatePartialHandler())
 	rt.Delete("/products/{id}", hd.DeleteProductHandler())
-
 	// run http server
 	err = http.ListenAndServe(h.addr, rt)
 	return
