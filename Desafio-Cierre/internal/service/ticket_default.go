@@ -3,17 +3,17 @@ package service
 import (
 	"context"
 	"fmt"
-	"goweb/Desafio-Cierre/internal/repository"
+	"goweb/Desafio-Cierre/internal"
 )
 
 // ServiceTicketDefault represents the default service of the tickets
 type ServiceTicketDefault struct {
 	// rp represents the repository of the tickets
-	rp repository.RepositoryTicketMap
+	rp internal.RepositoryTicket
 }
 
 // NewServiceTicketDefault creates a new default service of the tickets
-func NewServiceTicketDefault(rp repository.RepositoryTicketMap) *ServiceTicketDefault {
+func NewServiceTicketDefault(rp internal.RepositoryTicket) *ServiceTicketDefault {
 	return &ServiceTicketDefault{
 		rp: rp,
 	}

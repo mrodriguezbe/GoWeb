@@ -30,7 +30,7 @@ type RepositoryTicket interface {
 	Get(ctx context.Context) (t map[int]TicketAttributes, err error)
 
 	// GetTicketByDestinationCountry returns the tickets filtered by destination country
-	GetTicketByDestinationCountry(ctx context.Context, country string) (t map[int]TicketAttributes, err error)
+	GetTicketsByDestinationCountry(ctx context.Context, country string) (t map[int]TicketAttributes, err error)
 }
 
 type ServiceTicket interface {

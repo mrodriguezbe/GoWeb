@@ -63,7 +63,7 @@ func (a *ApplicationDefault) SetUp() (err error) {
 	}
 	rp := repository.NewRepositoryTicketMap(db, lastId)
 	// service
-	sv := service.NewServiceTicketDefault(*rp)
+	sv := service.NewServiceTicketDefault(rp)
 	// handler
 	hd := handler.NewDefaultTicketsHandler(sv)
 	// routes

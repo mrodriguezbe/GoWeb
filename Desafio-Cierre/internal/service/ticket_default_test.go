@@ -37,7 +37,7 @@ func TestServiceTicketDefault_GetTotalAmountTickets(t *testing.T) {
 		}, 2)
 
 		// - service
-		sv := service.NewServiceTicketDefault(*rp)
+		sv := service.NewServiceTicketDefault(rp)
 
 		country := "USA"
 
